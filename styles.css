@@ -1,7 +1,13 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: sans-serif;
+}
+
 html,
 body {
-  margin: 0;
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
 }
@@ -12,13 +18,13 @@ body {
   height: 90%;
   overflow: hidden;
   margin: auto;
-  border: 1px solid black;
   background: lightgray;
+  border: 1px solid black;
 }
 
 .panel {
   display: flex;
-  position: absolute;
+  position: relative;
   width: 100%;
   min-height: 30px;
   border-top: 1px solid black;
@@ -28,7 +34,7 @@ body {
 }
 
 .make-window {
-  width: 100px;
+  width: 10rem;
   height: 30px;
   text-align: center;
   line-height: 30px;
@@ -45,9 +51,9 @@ body {
 }
 
 .windows {
+  position: relative;
   background: lightyellow;
-  width: 100%;
-  height: 100%;
+  height: calc(100% - 30px);
   z-index: 1;
 }
 
@@ -65,7 +71,8 @@ body {
 .window-panel {
   display: flex;
   justify-content: flex-end;
-  height: 20px;
+  height: 30px;
+  line-height: 30px;
   width: 100%;
   border-bottom: 1px solid black;
   background: lightgrey;
@@ -74,7 +81,7 @@ body {
 .close-button,
 .minimize-button {
   height: 100%;
-  width: 25px;
+  width: 35px;
   border-left: 1px solid black;
   text-align: center;
   font-weight: bold;
@@ -93,7 +100,8 @@ body {
 }
 
 .mini-name {
-  width: 30px;
+  width: auto;
+  padding: 0 5px;
   height: 30px;
   text-align: center;
   line-height: 30px;

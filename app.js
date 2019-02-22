@@ -8,14 +8,13 @@ const canvas = document.querySelector('.canvas');
 
 console.log(canvas.offsetLeft, canvas.offsetTop);
 
-const panel = document.createElement('div');
-panel.classList.add('panel');
-
-canvas.appendChild(panel);
-
 const windows = document.createElement('div');
 windows.classList.add('windows');
 canvas.appendChild(windows);
+
+const panel = document.createElement('div');
+panel.classList.add('panel');
+canvas.appendChild(panel);
 
 const makeWindowButton = document.createElement('div');
 makeWindowButton.classList.add('make-window');
@@ -27,7 +26,7 @@ panel.appendChild(makeWindowButton);
 makeWindowButton.addEventListener('click', makeNewWindow);
 
 function makeNewWindow() {
-  state.count++;
+  const windowNumber = ++state.count;
 
 
   const newWindow = document.createElement('div');
@@ -38,7 +37,7 @@ function makeNewWindow() {
   windowPanel.classList.add('window-panel');
 
   const windowName = document.createElement('div');
-  const windowNameText = document.createTextNode(`Window ${state.count}`);
+  const windowNameText = document.createTextNode(`Window ${windowNumber}`);
   windowName.appendChild(windowNameText);
   windowName.classList.add('window-name');
   windowPanel.appendChild(windowName);
@@ -59,7 +58,7 @@ function makeNewWindow() {
   windows.appendChild(newWindow);
 
   const miniName = document.createElement('div');
-  const miniNameText = document.createTextNode(state.count);
+  const miniNameText = document.createTextNode(`Window ${windowNumber}`);
   miniName.appendChild(miniNameText);
   miniName.classList.add('mini-name');
   panel.append(miniName);
@@ -105,9 +104,9 @@ function makeNewWindow() {
   newWindow.addEventListener('mousedown', handleZIndex);
 
   function handleZIndex() {
-    state.zIndexMax++;
-    newWindow.style.zIndex = state.zIndexMax;
-    state.foregroundNumber = state.count;
+    if (state.foregroundNumber == windowNumber) return;
+    newWindow.style.zIndex = state.zIndexMax++;
+    state.foregroundNumber = windowNumber;
   }
 
 }
