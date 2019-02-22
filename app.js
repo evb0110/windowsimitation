@@ -65,6 +65,7 @@ function makeNewWindow() {
 
   miniName.addEventListener('click', () => {
     newWindow.classList.remove('none');
+    miniName.classList.remove('dark');
   });
 
   closeButton.addEventListener('click', () => {
@@ -74,6 +75,7 @@ function makeNewWindow() {
 
   minimizeButton.addEventListener('click', () => {
     newWindow.classList.add('none');
+    miniName.classList.add('dark');
   });
 
   windowPanel.onmousedown = function(event) {

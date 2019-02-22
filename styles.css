@@ -113,3 +113,7 @@ body {
 .none {
   display: none;
 }
+
+.dark {
+  background: darkgrey;
+}
