@@ -2,6 +2,10 @@ const state = {
   count: 0,
   zIndexMax: 0,
   activeWindowNumber: undefined,
+  zIndices: {},
+  zIndexCalcMax() {
+    return Math.max(...Object.values(this.zIndices));
+  }
 };
 
 const canvas = document.querySelector('.canvas');
@@ -29,6 +33,7 @@ function makeNewWindow() {
 
   currentWindow.classList.add('window');
   currentWindow.style.zIndex = ++state.zIndexMax;
+  state.zIndices[windowNumber] = currentWindow.style.zIndex;
 
   state.activeWindowNumber = windowNumber;
 
@@ -69,12 +74,17 @@ function makeNewWindow() {
     if (currentWindow.classList.contains('none')) {
       currentWindow.classList.remove('none');
       miniName.classList.remove('dark');
-    } else if (state.activeWindowNumber !== windowNumber) {
       currentWindow.style.zIndex = ++state.zIndexMax;
       state.activeWindowNumber = windowNumber;
-    } else if (state.activeWindowNumber === windowNumber) {
+      state.zIndices[windowNumber] = currentWindow.style.zIndex;
+    } else if (state.zIndices[windowNumber] != state.zIndexCalcMax()) {
+      currentWindow.style.zIndex = ++state.zIndexMax;
+      state.activeWindowNumber = windowNumber;
+      state.zIndices[windowNumber] = currentWindow.style.zIndex;
+    } else if (state.zIndices[windowNumber] == state.zIndexCalcMax()) {
       currentWindow.classList.add('none');
       miniName.classList.add('dark');
+      delete state.zIndices[windowNumber];
     }
   });
 
@@ -122,6 +132,7 @@ function makeNewWindow() {
     if (state.activeWindowNumber == windowNumber) return;
     currentWindow.style.zIndex = ++state.zIndexMax;
     state.activeWindowNumber = windowNumber;
+    state.zIndices[windowNumber] = currentWindow.style.zIndex;
   }
   // ===========================
 }
