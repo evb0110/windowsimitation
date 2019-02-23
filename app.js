@@ -1,7 +1,7 @@
 const state = {
   count: 0,
   zIndices: {},
-  get zIndexMax() {
+  zIndexMax() {
     return Math.max(...Object.values(this.zIndices));
   }
 };
@@ -18,9 +18,8 @@ canvas.appendChild(panel);
 
 const makeWindowButton = document.createElement('div');
 makeWindowButton.classList.add('make-window');
-const textMakeWindow = document.createTextNode('New Window');
-makeWindowButton.appendChild(textMakeWindow);
-
+const makeWindowText = document.createTextNode('New Window');
+makeWindowButton.appendChild(makeWindowText);
 panel.appendChild(makeWindowButton);
 
 makeWindowButton.addEventListener('click', makeNewWindow);
@@ -30,7 +29,7 @@ function makeNewWindow() {
   const currentWindow = document.createElement('div');
 
   currentWindow.classList.add('window');
-  currentWindow.style.zIndex = state.zIndexMax + 1;
+  currentWindow.style.zIndex = (Math.max(state.zIndexMax(), 0)) + 1;
 
   state.zIndices[windowNumber] = currentWindow.style.zIndex;
 
@@ -67,35 +66,22 @@ function makeNewWindow() {
   panel.append(miniName);
 
   // Клик по заголовку в рабочей панели
-  miniName.addEventListener('click', () => {
+  miniName.addEventListener('mousedown', () => {
+
     if (currentWindow.classList.contains('none')) {
       currentWindow.classList.remove('none');
       miniName.classList.remove('dark');
-      // currentWindow.style.zIndex = ++state.zIndexMax;
-      currentWindow.style.zIndex = state.zIndexMax + 1;
-      state.zIndices[windowNumber] = currentWindow.style.zIndex;
-    } else if (state.zIndices[windowNumber] != state.zIndexMax) {
-      // currentWindow.style.zIndex = ++state.zIndexMax;
-      currentWindow.style.zIndex = ++state.zIndexMax + 1;
-      state.zIndices[windowNumber] = currentWindow.style.zIndex;
-    } else if (state.zIndices[windowNumber] == state.zIndexMax) {
-      currentWindow.classList.add('none');
-      miniName.classList.add('dark');
-      delete state.zIndices[windowNumber];
+      upWindow();
+    } else if (state.zIndices[windowNumber] != state.zIndexMax()) {
+      upWindow();
+    } else {
+      minimizeWindow();
     }
   });
 
-  closeButton.addEventListener('mousedown', () => {
-    currentWindow.remove();
-    miniName.remove();
-    delete state.zIndices[windowNumber];
-  });
+  closeButton.addEventListener('click', closeWindow);
 
-  minimizeButton.addEventListener('mousedown', () => {
-    currentWindow.classList.add('none');
-    miniName.classList.add('dark');
-    delete state.zIndices[windowNumber];
-  });
+  minimizeButton.addEventListener('click', minimizeWindow);
 
   // ===== ПЕРЕТАСКИВАНИЕ =====
   windowPanel.onmousedown = function(event) {
@@ -124,15 +110,28 @@ function makeNewWindow() {
   };
   // ==========================
 
-  // ===== КЛИК ПО ОКНУ =====
-  currentWindow.addEventListener('mousedown', handleZIndex);
+  // ====== КЛИК ПО ОКНУ ======
+  currentWindow.addEventListener('mousedown', handleWindowClick);
 
-  function handleZIndex() {
-    if (state.activeWindowNumber == windowNumber) return;
-    // currentWindow.style.zIndex = ++state.zIndexMax;
-    currentWindow.style.zIndex = state.zIndexMax + 1;
-    state.activeWindowNumber = windowNumber;
-    state.zIndices[windowNumber] = currentWindow.style.zIndex;
+  function upWindow() {
+    state.zIndices[windowNumber] = currentWindow.style.zIndex = state.zIndexMax() + 1;
+  }
+
+  function closeWindow() {
+    currentWindow.remove();
+    miniName.remove();
+    delete state.zIndices[windowNumber];
+  }
+
+  function minimizeWindow() {
+    currentWindow.classList.add('none');
+    miniName.classList.add('dark');
+    delete state.zIndices[windowNumber];
+  }
+
+  function handleWindowClick() {
+    if (state.zIndexMax() == state.zIndices[windowNumber]) return;
+    upWindow();
   }
   // ===========================
 }
