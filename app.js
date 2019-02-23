@@ -28,7 +28,6 @@ makeWindowButton.addEventListener('click', makeNewWindow);
 function makeNewWindow() {
   const windowNumber = ++state.count;
 
-
   const newWindow = document.createElement('div');
   newWindow.classList.add('window');
   state.zIndexMax++;
@@ -59,7 +58,9 @@ function makeNewWindow() {
 
   const miniName = document.createElement('div');
   const miniNameText = document.createTextNode(`Window ${windowNumber}`);
-  miniName.appendChild(miniNameText);
+  const miniNameSpan = document.createElement('span');
+  miniNameSpan.appendChild(miniNameText);
+  miniName.appendChild(miniNameSpan);
   miniName.classList.add('mini-name');
   panel.append(miniName);
 
@@ -68,16 +69,17 @@ function makeNewWindow() {
     miniName.classList.remove('dark');
   });
 
-  closeButton.addEventListener('click', () => {
+  closeButton.addEventListener('mousedown', (event) => {
     newWindow.remove();
     miniName.remove();
   });
 
-  minimizeButton.addEventListener('click', () => {
+  minimizeButton.addEventListener('mousedown', (event) => {
     newWindow.classList.add('none');
     miniName.classList.add('dark');
   });
 
+  // ===== ПЕРЕТАСКИВАНИЕ =====
   windowPanel.onmousedown = function(event) {
     const offsetX = event.pageX - newWindow.offsetLeft;
     const offsetY = event.pageY - newWindow.offsetTop;
@@ -102,7 +104,9 @@ function makeNewWindow() {
       return false;
     };
   };
+  // ==========================
 
+  // ===== КЛИК ПО ОКНУ =====
   newWindow.addEventListener('mousedown', handleZIndex);
 
   function handleZIndex() {
@@ -110,5 +114,6 @@ function makeNewWindow() {
     newWindow.style.zIndex = state.zIndexMax++;
     state.foregroundNumber = windowNumber;
   }
+  // ===========================
 
 }
