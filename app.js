@@ -1,9 +1,7 @@
 const state = {
   count: 0,
-  zIndexMax: 0,
-  activeWindowNumber: undefined,
   zIndices: {},
-  zIndexCalcMax() {
+  get zIndexMax() {
     return Math.max(...Object.values(this.zIndices));
   }
 };
@@ -32,10 +30,9 @@ function makeNewWindow() {
   const currentWindow = document.createElement('div');
 
   currentWindow.classList.add('window');
-  currentWindow.style.zIndex = ++state.zIndexMax;
-  state.zIndices[windowNumber] = currentWindow.style.zIndex;
+  currentWindow.style.zIndex = state.zIndexMax + 1;
 
-  state.activeWindowNumber = windowNumber;
+  state.zIndices[windowNumber] = currentWindow.style.zIndex;
 
   const windowPanel = document.createElement('div');
   windowPanel.classList.add('window-panel');
@@ -74,14 +71,14 @@ function makeNewWindow() {
     if (currentWindow.classList.contains('none')) {
       currentWindow.classList.remove('none');
       miniName.classList.remove('dark');
-      currentWindow.style.zIndex = ++state.zIndexMax;
-      state.activeWindowNumber = windowNumber;
+      // currentWindow.style.zIndex = ++state.zIndexMax;
+      currentWindow.style.zIndex = state.zIndexMax + 1;
       state.zIndices[windowNumber] = currentWindow.style.zIndex;
-    } else if (state.zIndices[windowNumber] != state.zIndexCalcMax()) {
-      currentWindow.style.zIndex = ++state.zIndexMax;
-      state.activeWindowNumber = windowNumber;
+    } else if (state.zIndices[windowNumber] != state.zIndexMax) {
+      // currentWindow.style.zIndex = ++state.zIndexMax;
+      currentWindow.style.zIndex = ++state.zIndexMax + 1;
       state.zIndices[windowNumber] = currentWindow.style.zIndex;
-    } else if (state.zIndices[windowNumber] == state.zIndexCalcMax()) {
+    } else if (state.zIndices[windowNumber] == state.zIndexMax) {
       currentWindow.classList.add('none');
       miniName.classList.add('dark');
       delete state.zIndices[windowNumber];
@@ -91,6 +88,7 @@ function makeNewWindow() {
   closeButton.addEventListener('mousedown', () => {
     currentWindow.remove();
     miniName.remove();
+    delete state.zIndices[windowNumber];
   });
 
   minimizeButton.addEventListener('mousedown', () => {
@@ -131,7 +129,8 @@ function makeNewWindow() {
 
   function handleZIndex() {
     if (state.activeWindowNumber == windowNumber) return;
-    currentWindow.style.zIndex = ++state.zIndexMax;
+    // currentWindow.style.zIndex = ++state.zIndexMax;
+    currentWindow.style.zIndex = state.zIndexMax + 1;
     state.activeWindowNumber = windowNumber;
     state.zIndices[windowNumber] = currentWindow.style.zIndex;
   }
