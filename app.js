@@ -8,10 +8,10 @@ const state = {
   // объект, в котором записаны значения z-index окна;
   // в качестве ключей используются номера окон
 
-  zIndexMax() {
+  get zIndexMax() {
     // возвращает максимальное значение z-index в данный
-    // момент времени
-    return Math.max(...Object.values(this.zIndices));
+    // момент времени или ноль, если активных окон нет
+    return Math.max(...Object.values(this.zIndices), 0);
   },
 };
 
@@ -50,10 +50,8 @@ function makeNewWindow() {
   // Собственно окно
 
   currentWindow.classList.add('window');
-  currentWindow.style.zIndex = Math.max(state.zIndexMax(), 0) + 1;
-  // Перед созданием первого окна state.zIndexMax возвращает -Infinity,
-  // в результате z-index окна станет равен 1. Для каждого последующего
-  // создаваемого окна его z-index будет на 1 больше максимума на тот момент
+  currentWindow.style.zIndex = state.zIndexMax + 1;
+  // Новое окно должно оказаться над всеми остальными
 
   state.zIndices[windowNumber] = currentWindow.style.zIndex;
   // z-index текущего окна записывается в глобальный объект
@@ -109,7 +107,7 @@ function makeNewWindow() {
       // изменить цвет заголовка в рабочей панели,
       upWindow();
       // поместить окно поверх всех остальных
-    } else if (state.zIndices[windowNumber] != state.zIndexMax()) {
+    } else if (state.zIndices[windowNumber] != state.zIndexMax) {
       // В условии НАМЕРЕННО использовано нестрогое
       // сравнение, т.к. z-index может быть и числом, и строкой.
       // Если окно не свёрнуто и не верхнее,
@@ -147,16 +145,7 @@ function makeNewWindow() {
     // Вычисляем положение мыши относительно левого верхнего
     // угла текущего окна
 
-    function moveAt(pageX, pageY) {
-      // Движение окна параллельно движению мыши
-      currentWindow.style.left = pageX - offsetX + 'px';
-      currentWindow.style.top = pageY - offsetY + 'px';
-    }
 
-    function onMouseMove(event) {
-      // Обработчик движения мыши
-      moveAt(event.pageX, event.pageY);
-    }
 
     document.addEventListener('mousemove', onMouseMove);
     // Вызыв обработчика движения мыши
@@ -171,6 +160,17 @@ function makeNewWindow() {
       // Чтобы окно не прилипало к мыши
       return false;
     };
+
+    function moveAt(pageX, pageY) {
+      // Движение окна параллельно движению мыши
+      currentWindow.style.left = pageX - offsetX + 'px';
+      currentWindow.style.top = pageY - offsetY + 'px';
+    }
+
+    function onMouseMove(event) {
+      // Обработчик движения мыши
+      moveAt(event.pageX, event.pageY);
+    }
   };
   // === КОНЕЦ ПЕРЕТАСКИВАНИЯ ======
 
@@ -180,7 +180,7 @@ function makeNewWindow() {
   function upWindow() {
     // Текущее окно на передний план + запись его z-index в объект
     state.zIndices[windowNumber] = currentWindow.style.zIndex =
-      state.zIndexMax() + 1;
+      state.zIndexMax + 1;
   }
 
   function closeWindow() {
@@ -203,7 +203,7 @@ function makeNewWindow() {
 
   function handleWindowClick() {
     // При клике по окну
-    if (state.zIndexMax() == state.zIndices[windowNumber]) return;
+    if (state.zIndexMax == state.zIndices[windowNumber]) return;
     // проверяется, верхнее ли оно (НАМЕРЕННО нестрогое сравнение)
     upWindow();
     // и в этом случае оно выводится на передний план
