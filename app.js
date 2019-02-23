@@ -1,12 +1,10 @@
 const state = {
   count: 0,
   zIndexMax: 0,
-  foregroundNumber: undefined
+  activeWindowNumber: undefined
 };
 
 const canvas = document.querySelector('.canvas');
-
-console.log(canvas.offsetLeft, canvas.offsetTop);
 
 const windows = document.createElement('div');
 windows.classList.add('windows');
@@ -28,10 +26,13 @@ makeWindowButton.addEventListener('click', makeNewWindow);
 function makeNewWindow() {
   const windowNumber = ++state.count;
 
-  const newWindow = document.createElement('div');
-  newWindow.classList.add('window');
-  state.zIndexMax++;
-  newWindow.style.zIndex = state.zIndexMax;
+  const currentWindow = document.createElement('div');
+  currentWindow.classList.add('window');
+
+  currentWindow.style.zIndex = ++state.zIndexMax;
+// ***************************
+  state.activeWindowNumber = windowNumber;
+  
   const windowPanel = document.createElement('div');
   windowPanel.classList.add('window-panel');
 
@@ -53,8 +54,8 @@ function makeNewWindow() {
   closeButton.appendChild(closeText);
   windowPanel.appendChild(closeButton);
 
-  newWindow.appendChild(windowPanel);
-  windows.appendChild(newWindow);
+  currentWindow.appendChild(windowPanel);
+  windows.appendChild(currentWindow);
 
   const miniName = document.createElement('div');
   const miniNameText = document.createTextNode(`Window ${windowNumber}`);
@@ -65,28 +66,28 @@ function makeNewWindow() {
   panel.append(miniName);
 
   miniName.addEventListener('click', () => {
-    newWindow.classList.remove('none');
+    currentWindow.classList.remove('none');
     miniName.classList.remove('dark');
   });
 
   closeButton.addEventListener('mousedown', (event) => {
-    newWindow.remove();
+    currentWindow.remove();
     miniName.remove();
   });
 
   minimizeButton.addEventListener('mousedown', (event) => {
-    newWindow.classList.add('none');
+    currentWindow.classList.add('none');
     miniName.classList.add('dark');
   });
 
   // ===== ПЕРЕТАСКИВАНИЕ =====
   windowPanel.onmousedown = function(event) {
-    const offsetX = event.pageX - newWindow.offsetLeft;
-    const offsetY = event.pageY - newWindow.offsetTop;
+    const offsetX = event.pageX - currentWindow.offsetLeft;
+    const offsetY = event.pageY - currentWindow.offsetTop;
 
     function moveAt(pageX, pageY) {
-      newWindow.style.left = pageX - offsetX + 'px';
-      newWindow.style.top = pageY - offsetY + 'px';
+      currentWindow.style.left = pageX - offsetX + 'px';
+      currentWindow.style.top = pageY - offsetY + 'px';
     }
 
     function onMouseMove(event) {
@@ -107,12 +108,12 @@ function makeNewWindow() {
   // ==========================
 
   // ===== КЛИК ПО ОКНУ =====
-  newWindow.addEventListener('mousedown', handleZIndex);
+  currentWindow.addEventListener('mousedown', handleZIndex);
 
   function handleZIndex() {
-    if (state.foregroundNumber == windowNumber) return;
-    newWindow.style.zIndex = state.zIndexMax++;
-    state.foregroundNumber = windowNumber;
+    if (state.activeWindowNumber == windowNumber) return;
+    currentWindow.style.zIndex = ++state.zIndexMax;
+    state.activeWindowNumber = windowNumber;
   }
   // ===========================
 
