@@ -80,8 +80,10 @@ function makeNewWindow() {
   });
 
   closeButton.addEventListener('click', closeWindow);
-
+  closeButton.addEventListener('mousedown', (e) => { e.stopPropagation() });
+  
   minimizeButton.addEventListener('click', minimizeWindow);
+  minimizeButton.addEventListener('mousedown', (e) => { e.stopPropagation() });
 
   // ===== ПЕРЕТАСКИВАНИЕ =====
   windowPanel.onmousedown = function(event) {
