@@ -1,7 +1,7 @@
 const state = {
   count: 0,
   zIndexMax: 0,
-  activeWindowNumber: undefined
+  activeWindowNumber: undefined,
 };
 
 const canvas = document.querySelector('.canvas');
@@ -25,14 +25,13 @@ makeWindowButton.addEventListener('click', makeNewWindow);
 
 function makeNewWindow() {
   const windowNumber = ++state.count;
-
   const currentWindow = document.createElement('div');
-  currentWindow.classList.add('window');
 
+  currentWindow.classList.add('window');
   currentWindow.style.zIndex = ++state.zIndexMax;
-// ***************************
+
   state.activeWindowNumber = windowNumber;
-  
+
   const windowPanel = document.createElement('div');
   windowPanel.classList.add('window-panel');
 
@@ -65,17 +64,26 @@ function makeNewWindow() {
   miniName.classList.add('mini-name');
   panel.append(miniName);
 
+  // Клик по заголовку в рабочей панели
   miniName.addEventListener('click', () => {
-    currentWindow.classList.remove('none');
-    miniName.classList.remove('dark');
+    if (currentWindow.classList.contains('none')) {
+      currentWindow.classList.remove('none');
+      miniName.classList.remove('dark');
+    } else if (state.activeWindowNumber !== windowNumber) {
+      currentWindow.style.zIndex = ++state.zIndexMax;
+      state.activeWindowNumber = windowNumber;
+    } else if (state.activeWindowNumber === windowNumber) {
+      currentWindow.classList.add('none');
+      miniName.classList.add('dark');
+    }
   });
 
-  closeButton.addEventListener('mousedown', (event) => {
+  closeButton.addEventListener('mousedown', () => {
     currentWindow.remove();
     miniName.remove();
   });
 
-  minimizeButton.addEventListener('mousedown', (event) => {
+  minimizeButton.addEventListener('mousedown', () => {
     currentWindow.classList.add('none');
     miniName.classList.add('dark');
   });
@@ -116,5 +124,4 @@ function makeNewWindow() {
     state.activeWindowNumber = windowNumber;
   }
   // ===========================
-
 }
