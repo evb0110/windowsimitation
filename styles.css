@@ -26,7 +26,7 @@ body {
   display: flex;
   position: relative;
   width: 100%;
-  min-height: 30px;
+  min-height: 50px;
   border-top: 1px solid black;
   bottom: 0px;
   background: rgb(128, 127, 127);
@@ -36,9 +36,9 @@ body {
 .make-window {
   flex-shrink: 0;
   width: 10rem;
-  height: 30px;
+  height: 50px;
   text-align: center;
-  line-height: 30px;
+  line-height: 50px;
   cursor: pointer;
   background: green;
   color: white;
@@ -54,7 +54,7 @@ body {
 .windows {
   position: relative;
   background: lightyellow;
-  height: calc(100% - 30px);
+  height: calc(100% - 50px);
   z-index: 1;
 }
 
@@ -105,9 +105,9 @@ body {
   direction: rtl;
   overflow: hidden;
   padding: 0 5px;
-  min-width: 30px;
-  height: 30px;
-  line-height: 30px;
+  min-width: 50px;
+  height: 50px;
+  line-height: 50px;
   background: lightgrey;
   border-right: 1px solid black;
   user-select: none;
