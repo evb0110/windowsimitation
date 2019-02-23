@@ -96,6 +96,7 @@ function makeNewWindow() {
   minimizeButton.addEventListener('mousedown', () => {
     currentWindow.classList.add('none');
     miniName.classList.add('dark');
+    delete state.zIndices[windowNumber];
   });
 
   // ===== ПЕРЕТАСКИВАНИЕ =====
